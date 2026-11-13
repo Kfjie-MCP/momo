@@ -1,0 +1,24 @@
+[Unit]
+Description=MaiMemo MCP server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=momo-mcp
+Group=momo-mcp
+WorkingDirectory=/opt/mcp/momo
+EnvironmentFile=/etc/momo-mcp.env
+ExecStart=/usr/bin/node /opt/mcp/momo/dist/index.js
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+StateDirectory=momo-mcp
+Environment=HOME=/var/lib/momo-mcp
+ReadWritePaths=/var/lib/momo-mcp
+
+[Install]
+WantedBy=multi-user.target

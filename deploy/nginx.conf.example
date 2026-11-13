@@ -1,0 +1,35 @@
+server {
+    listen 443 ssl;
+    server_name mcp.example.com;
+
+    ssl_certificate /etc/letsencrypt/live/mcp.example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/mcp.example.com/privkey.pem;
+
+    location = /momo {
+        proxy_pass http://127.0.0.1:8787/momo;
+        include /etc/nginx/snippets/mcp-streamable-http.conf;
+    }
+
+    location = /momo/ {
+        proxy_pass http://127.0.0.1:8787/momo;
+        include /etc/nginx/snippets/mcp-streamable-http.conf;
+    }
+
+    location = /momo/healthz {
+        proxy_pass http://127.0.0.1:8787/healthz;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_buffering off;
+    }
+
+    location / {
+        return 404;
+    }
+}
+
+server {
+    listen 80;
+    server_name mcp.example.com;
+    return 301 https://$host$request_uri;
+}
