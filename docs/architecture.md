@@ -5,7 +5,7 @@
 | 文件 | 负责的内容 |
 | --- | --- |
 | `config.ts` | 环境变量、凭据文件、绑定地址和认证模式 |
-| `server.ts` | HTTP 路由、Bearer 认证、健康检查和页面响应 |
+| `server.ts` | HTTP 路由、Bearer 认证、健康检查和浏览器跳转 |
 | `mcp.ts` | 注册工具、初始化指引、状态和 CLI 兼容入口 |
 | `official.ts` | 从 OpenAPI 生成工具 schema，调用并校验官方响应，提供文档资源和提示 |
 | `study.ts` | 学习语义、字段说明和冲突筛选检查 |
@@ -14,7 +14,6 @@
 | `review-store.ts` | SQLite 版本迁移、事件及撤回去重、每日快照与统计、长期汇总、历史游标 |
 | `errors.ts` | 错误分类和兼容响应封装 |
 | `cli.ts` | CLI 参数校验、受控子进程调用、输出限制和凭据脱敏 |
-| `home.ts` | 浏览器访问 MCP 路径时展示的项目页面 |
 
 官方调用固定发送至 `https://open.maimemo.com/open`。`official.ts` 根据 schema 处理路径、查询和请求体，设置 Bearer Token，限制超时和响应大小。它保留原始成功数据，验证响应后返回；错误结果保留旧字符串，并添加分类字段。
 

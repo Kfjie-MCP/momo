@@ -7,7 +7,6 @@ import type { NextFunction, Request, Response } from "express";
 
 import type { AppConfig } from "./config.js";
 import { createMcpServer } from "./mcp.js";
-import { homePage } from "./home.js";
 
 function secureEqual(left: string, right: string): boolean {
   const leftBuffer = Buffer.from(left);
@@ -97,14 +96,13 @@ export function createApp(config: AppConfig) {
     });
   };
   app.get(config.mcpPath, (req, res, next) => {
-    // Only browser/document requests receive HTML. MCP SSE GET remains unsupported.
+    // Browser visits use the shared center; MCP SSE GET remains unsupported.
     if (!req.accepts("html")) return next();
-    res.setHeader("Content-Security-Policy", "default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'");
     res.setHeader("X-Content-Type-Options", "nosniff");
     res.setHeader("Referrer-Policy", "no-referrer");
     res.setHeader("Cache-Control", "no-store");
     res.setHeader("Vary", "Accept");
-    res.type("html").send(homePage.replace("{{MCP_PATH}}", config.mcpPath.replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!))));
+    res.redirect(302, "/center/");
   }, bearerAuth(config), methodNotAllowed);
   app.delete(config.mcpPath, bearerAuth(config), methodNotAllowed);
 

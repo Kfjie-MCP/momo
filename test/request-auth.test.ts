@@ -58,16 +58,14 @@ describe("request-scoped MaiMemo authentication", () => {
     assert.equal(response.status, 401);
   });
 
-  it("serves a public homepage without weakening MCP authentication", async () => {
+  it("redirects browser visits to the center without weakening MCP authentication", async () => {
     for (const path of ["/momo", "/momo/"]) {
-      const response = await fetch(`${baseUrl}${path}`, { headers: { accept: "text/html" } });
-      assert.equal(response.status, 200);
-      assert.match(response.headers.get("content-type")!, /text\/html/);
-      assert.match(response.headers.get("content-security-policy")!, /frame-ancestors 'none'/);
-      const html = await response.text();
-      assert.match(html, /非墨墨官方应用/);
-      assert.match(html, /OAuth 登录与自动续期尚未启用/);
-      assert.match(html, /隐私与数据说明/);
+      const response = await fetch(`${baseUrl}${path}`, { headers: { accept: "text/html" }, redirect: "manual" });
+      assert.equal(response.status, 302);
+      assert.equal(response.headers.get("location"), "/center/");
+      assert.equal(response.headers.get("cache-control"), "no-store");
+      assert.equal(response.headers.get("vary"), "Accept");
+      await response.body?.cancel();
     }
     const unauthorized = await fetch(`${baseUrl}/momo`, { headers: { accept: "text/event-stream" } });
     assert.equal(unauthorized.status, 401);

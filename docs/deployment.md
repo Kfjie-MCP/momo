@@ -57,7 +57,7 @@ sudo systemctl enable --now momo-mcp.service
 
 `deploy/mcp.example.com.nginx.conf` 保留已有部署的域名示例。它将 `/momo` 转发到 `127.0.0.1:8787/momo`，`/momo/healthz` 转发到服务的 `/healthz`。共享片段转发 Authorization，关闭缓冲，并给工具调用留出较长超时时间。
 
-应用对浏览器的 HTML 请求展示页面，MCP 使用 POST。当前 transport 不提供 SSE GET 会话或 DELETE 会话；相应协议请求返回 405，并继续进行入口认证检查。
+浏览器的 HTML 请求跳转到同站点的 `/center/` 管理中心，MCP 继续使用原路径的 POST 接口。当前 transport 不提供 SSE GET 会话或 DELETE 会话；相应协议请求返回 405，并继续进行入口认证检查。
 
 ## 凭据、写操作与日志
 
